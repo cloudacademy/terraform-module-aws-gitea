@@ -15,7 +15,7 @@ output "git_credentials_command" {
 git config --global user.email ${var.email}
 git config --global user.name ${var.username}
 git config --global credential.helper store
-echo 'http://${var.username}:${var.password}@${aws_instance.gitea.public_ip}:${var.external_port}' > ~/.git-credentials
+echo "http://${var.username}:${var.password}@${aws_instance.gitea.public_ip}:${var.external_port}" > ~/.git-credentials
 EOF
 }
 
