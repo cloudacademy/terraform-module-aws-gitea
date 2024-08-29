@@ -19,7 +19,7 @@ variable "instance_name" {
 variable "image" {
   description = "Gitea docker image"
   type        = string
-  default     = "public.ecr.aws/cloudacademy-labs/cloudacademy/labs/gitea:1.21.11-07a03c7"
+  default     = "public.ecr.aws/cloudacademy-labs/cloudacademy/labs/gitea:1.22.1-57a63cf"
 }
 
 variable "username" {
