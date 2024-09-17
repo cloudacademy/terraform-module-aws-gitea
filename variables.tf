@@ -113,7 +113,7 @@ variable "docker_version" {
 variable "runner_binary_url" {
   description = "URL to download the runner binary"
   type        = string
-  default     = "https://assets.labs.cloudacademy.com/terraform-module-aws-gitea/act_runner-0.2.10-linux-amd64"
+  default     = "https://assets.labs.platform.qa.com/terraform-module-aws-gitea/act_runner-0.2.10-linux-amd64"
 }
 
 variable "runner_image" {
