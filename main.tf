@@ -1,7 +1,7 @@
 resource "aws_vpc_security_group_ingress_rule" "web" {
   security_group_id = var.security_group_id
   from_port         = var.external_port
-  to_port           = var.external_port
+  to_port           = var.token_port
   ip_protocol       = -1
   cidr_ipv4         = "0.0.0.0/0"
 }
@@ -20,8 +20,11 @@ resource "aws_iam_role" "gitea" {
       }
     ]
   })
+}
 
-  managed_policy_arns = var.gitea_role_managed_policies
+resource "aws_iam_role_policy_attachments_exclusive" "gitea" {
+  role_name   = aws_iam_role.gitea.name
+  policy_arns = var.gitea_role_managed_policies
 }
 
 resource "aws_iam_instance_profile" "gitea" {
@@ -50,6 +53,7 @@ resource "aws_instance" "gitea" {
   }
 
   provisioner "local-exec" {
-    command = "until curl -s http://${self.public_ip}:${var.external_port}/api/healthz; do sleep 5; done"
+    #command = "until curl -s http://${self.public_ip}:${var.external_port}/api/healthz; do sleep 5; done"
+    command = "until curl -s http://${self.public_ip}:${var.external_port}/api/v1/users/${var.username}; do sleep 5; done"
   }
 }

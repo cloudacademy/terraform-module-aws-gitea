@@ -1,0 +1,77 @@
+#!/bin/bash
+
+set -x
+
+touch /home/ec2-user/.user-data-started
+
+echo --- install docker ---
+dnf update -y
+dnf install -y nmap-ncat python3-pip python3 tmux htop git jq aws awk # TODO probably only need git
+dnf install -y ${docker.version}
+systemctl enable docker
+systemctl start docker
+newgrp
+
+echo --- setup gitea ---
+docker pull -q ${docker.image}
+mkdir /etc/gitea /data
+mkdir -vp /etc/gitea/gitea/conf/
+cat <<EOT > /etc/gitea/gitea/conf/app.ini
+${app_ini}
+EOT
+PUBLIC_IP=$(curl -s http://checkip.amazonaws.com)
+sed -i s/PUBLIC_IP/$PUBLIC_IP/g /etc/gitea/gitea/conf/app.ini 
+
+echo --- start gitea ---
+docker network create gitea
+docker run -d \
+  --name gitea \
+  --network gitea \
+  --restart always \
+  -e USER_UID=1000 \
+  -e USER_GID=1000 \
+  -v /etc/gitea:/data \
+  -v /etc/timezone:/etc/timezone:ro \
+  -v /etc/localtime:/etc/localtime:ro \
+  -p ${ports.external}:3000 \
+  -p ${ports.ssh}:22 \
+  ${docker.image}
+
+while [ "$(curl -s http://localhost:${ports.external}/api/healthz | jq -r .status)" != "pass" ]; do sleep 2; done && echo "pass"
+
+echo ---create user ---
+docker exec -u git gitea bash -c "/app/gitea/gitea migrate"
+docker exec -u git gitea bash -c \
+    "/app/gitea/gitea admin user create --username ${user.name} --email ${user.email} --password ${user.password} --admin"
+
+echo --- create token ---
+mkdir -vp /token
+docker exec -u git gitea bash -c \
+    "/app/gitea/gitea admin user generate-access-token --username ${user.name} --token-name ${user.name} --scopes all" | awk '{print $NF}' | xargs echo -n > /token/token
+cd /token
+nohup python3 -m http.server ${ports.token} &
+cd -
+
+if [ "${runner.create}" = true ]; then
+  echo --- pull runner image ---
+  docker pull -q ${runner.image} &
+
+  echo --- install runner ---
+  curl -sL ${runner.binary_url} > /usr/local/bin/act
+  chmod +x /usr/local/bin/act
+
+  echo --- create runner config ---
+  cat <<EOC > ./runner.yaml
+  ${runner.config}
+EOC
+
+  echo --- register runner ---
+  RUNNER_TOKEN=$(docker exec -u git gitea bash -c "/app/gitea/gitea actions generate-runner-token")
+  act register --no-interactive --instance http://$PUBLIC_IP:${ports.external} --token "$RUNNER_TOKEN"
+
+  echo --- start runner ---
+  nohup act --config ./runner.yaml daemon &
+fi
+
+echo --- gitea setup finished ---
+touch /home/ec2-user/.gitea-ready

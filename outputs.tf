@@ -2,10 +2,6 @@ output "base_url" {
   value = "http://${aws_instance.gitea.public_ip}:${var.external_port}/"
 }
 
-output "empty_repo_url" {
-  value = "http://${aws_instance.gitea.public_ip}:${var.external_port}/${var.username}/${var.empty_repo_name}.git"
-}
-
 output "login_url" {
   value = "http://${aws_instance.gitea.public_ip}:${var.external_port}/user/login"
 }
@@ -32,13 +28,9 @@ output "server_ip" {
 }
 
 output "role_arn" {
-    value = aws_iam_role.gitea.arn
+  value = aws_iam_role.gitea.arn
 }
 
-output "cloned_repo_url" {
-  value = "http://${aws_instance.gitea.public_ip}:${var.external_port}/${var.username}/${basename(var.cloned_repo_source)}.git"
-}
-
-output "cloned_repo_name" {
-  value = trimsuffix(basename(var.cloned_repo_source), ".git")
+output "auth_token" {
+  value = data.http.auth_token.response_body
 }
