@@ -4,12 +4,6 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
-variable "runner_instance_type" {
-  description = "Runner EC2 instance type"
-  type        = string
-  default     = "t2.micro"
-}
-
 variable "instance_name" {
   description = "EC2 instance name"
   type        = string
@@ -19,7 +13,7 @@ variable "instance_name" {
 variable "image" {
   description = "Gitea docker image"
   type        = string
-  default     = "public.ecr.aws/cloudacademy-labs/cloudacademy/labs/gitea:1.22.1-57a63cf"
+  default     = "public.ecr.aws/cloudacademy-labs/cloudacademy/labs/gitea:1.22.3-de167e2"
 }
 
 variable "username" {
@@ -40,24 +34,6 @@ variable "email" {
   default     = "student@cloudacademylabs.com"
 }
 
-variable "create_empty_repo" {
-  description = "Create an empty repository"
-  type        = bool
-  default     = false
-}
-
-variable "empty_repo_name" {
-  description = "Gitea repository name"
-  type        = string
-  default     = "lab-repo"
-}
-
-variable "empty_repo_description" {
-  description = "Gitea repository description"
-  type        = string
-  default     = "Lab Repository"
-}
-
 variable "external_port" {
   description = "Gitea external port"
   type        = number
@@ -70,10 +46,10 @@ variable "ssh_port" {
   default     = 222
 }
 
-variable "jwt_secret" {
-  description = "JWT secret"
-  type        = string
-  default     = "kU9i_JAtfZ0z9yqnBks3ZQfjT0GAjU81zQz1sH6lraQ"
+variable "token_port" {
+  description = "Gitea token port"
+  type        = number
+  default     = 3001
 }
 
 variable "key_pair_name" {
@@ -90,18 +66,6 @@ variable "volume_size" {
   description = "Root volume size"
   type        = number
   default     = 50
-}
-
-variable "create_cloned_repo" {
-  description = "Create a cloned repository"
-  type        = bool
-  default     = false
-}
-
-variable "cloned_repo_source" {
-  description = "Command to clone the repository"
-  type        = string
-  default     = "https://github.com/cloudacademy/python-flask-microservices.git"
 }
 
 variable "docker_version" {
@@ -126,24 +90,6 @@ variable "gitea_role_managed_policies" {
   description = "List of ARNs of managed policies to attach to the Gitea role"
   type        = list(string)
   default     = ["arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"]
-}
-
-variable "create_secret" {
-  description = "Create a secret"
-  type        = bool
-  default     = false
-}
-
-variable "secret_name" {
-  description = "Secret name"
-  type        = string
-  default     = "GITEACREDS"
-}
-
-variable "secret_value" {
-  description = "Secret value"
-  type        = string
-  default     = "student:LabPassword123"
 }
 
 variable "create_runner" {
