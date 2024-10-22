@@ -53,7 +53,6 @@ resource "aws_instance" "gitea" {
   }
 
   provisioner "local-exec" {
-    #command = "until curl -s http://${self.public_ip}:${var.external_port}/api/healthz; do sleep 5; done"
-    command = "until curl -s http://${self.public_ip}:${var.external_port}/api/v1/users/${var.username}; do sleep 5; done"
+    command = "until curl -s http://${self.public_ip}:${var.token_port}/token; do sleep 5; done"
   }
 }
