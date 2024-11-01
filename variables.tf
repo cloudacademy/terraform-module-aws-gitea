@@ -86,6 +86,11 @@ variable "security_group_id" {
   type        = string
 }
 
+variable "subnet_id" {
+  description = "Subnet ID"
+  type        = string
+}
+
 variable "volume_size" {
   description = "Root volume size"
   type        = number

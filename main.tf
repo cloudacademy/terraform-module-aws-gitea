@@ -36,6 +36,7 @@ resource "aws_instance" "gitea" {
   vpc_security_group_ids = [var.security_group_id]
   user_data              = base64encode(local.user_data)
   iam_instance_profile   = aws_iam_instance_profile.gitea.name
+  subnet_id              = var.subnet_id
 
   credit_specification {
     cpu_credits = "standard"
