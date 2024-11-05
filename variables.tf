@@ -37,7 +37,7 @@ variable "password" {
 variable "email" {
   description = "Gitea email"
   type        = string
-  default     = "student@cloudacademylabs.com"
+  default     = "student@platform.qa.com"
 }
 
 variable "create_empty_repo" {
