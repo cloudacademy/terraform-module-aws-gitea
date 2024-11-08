@@ -37,7 +37,7 @@ variable "password" {
 variable "email" {
   description = "Gitea email"
   type        = string
-  default     = "student@cloudacademylabs.com"
+  default     = "student@platform.qa.com"
 }
 
 variable "create_empty_repo" {
@@ -83,6 +83,11 @@ variable "key_pair_name" {
 
 variable "security_group_id" {
   description = "Security group ID"
+  type        = string
+}
+
+variable "subnet_id" {
+  description = "Subnet ID"
   type        = string
 }
 
