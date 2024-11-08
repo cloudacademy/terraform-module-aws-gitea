@@ -32,7 +32,7 @@ output "server_ip" {
 }
 
 output "role_arn" {
-    value = aws_iam_role.gitea.arn
+  value = aws_iam_role.gitea.arn
 }
 
 output "cloned_repo_url" {

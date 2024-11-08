@@ -46,10 +46,13 @@ module aws_gitea {
 
     key_pair_name       = "your-key-pair-name"
     security_group_id   = "your-security-group-id"
+    subnet_id           = "your-subnet-id"
 }
 ```
 
-Example with the AWS data module:
+### Example with the AWS data module
+
+The following will deploy gitea into a subnet in the default vpc.
 
 ```hcl
 module "aws_data" {
@@ -61,8 +64,11 @@ module "aws_gitea" {
 
     key_pair_name       = module.aws_data.aws.key_pair_name
     security_group_id   = module.aws_data.default_vpc.security_group.id
+    subnet_id           = module.aws_data.default_vpc.subnets.a.id
 }
 ```
+
+### Creating an empty repository
 
 By default, there will be no repositories in Gitea.
 
@@ -83,6 +89,8 @@ module "aws_gitea" {
 }
 ```
 
+### Cloning an existing repository
+
 To create a repo that is a clone of an existing publicly repo (say on github):
 
 ```hcl
@@ -100,7 +108,7 @@ module "aws_gitea" {
 }
 ```
 
-Notes:
+### Notes
 
 - The AWS instance's role ARN is exposed as an output and a managed policies list can be supplied as a variable. Both can be used to grant the Gitea runner access to AWS resources and services.
 - The runner is disabled by default and can be enabled by setting the `create_runner` variable to `true`.
